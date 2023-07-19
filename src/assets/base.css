@@ -40,4 +40,13 @@ input, textarea, button {
   appearance: none; /* Remove default styles in modern browsers */
 }
 
-/* Add your own reset styles as needed */
+:root {
+  --color-light-1: #D4E2D4;
+  --color-light-2: #A1CCD1;
+  --color-dark-1: #7C9D96;
+  --color-dark-2: #565656;
+  --color-buff: #E9B384;
+
+  --text-light-1: #ffffff;
+  --text-dark-1: #000000;
+}
