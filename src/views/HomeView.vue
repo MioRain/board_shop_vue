@@ -3,6 +3,7 @@ import { reactive, provide, onMounted } from 'vue'
 import { apiHelper } from '../utils/helpers'
 import HeaderArea from '../components/HeaderArea.vue'
 import FilterSearch from '../components/FilterSearch.vue'
+import ShowProducts from '../components/ShowProducts.vue'
 
 const data = reactive({
   products: []
@@ -25,6 +26,7 @@ const fetchProducts = async () => {
   data.products = response.data
 }
 
+provide('data', data)
 provide('filter', filter)
 provide('fetchProducts', fetchProducts)
 
@@ -38,15 +40,13 @@ onMounted(() => {
 
   <main>
     <FilterSearch />
-    <p v-for="product in data.products">{{ product.name }}</p>
+    <ShowProducts />
   </main>
 </template>
 
 <style lang="scss" scoped>
 main {
-  height: 100%;
   padding: 0 100px;
   padding-top: 100px;
-  background-color: var(--color-light-1);
 }
 </style>
