@@ -1,5 +1,6 @@
 <script setup>
 import HeaderArea from '../components/HeaderArea.vue'
+import FilterSearch from '../components/FilterSearch.vue'
 
 </script>
 
@@ -7,7 +8,8 @@ import HeaderArea from '../components/HeaderArea.vue'
   <HeaderArea />
   
   <main>
-    <h1>Main</h1>
+    <h1>main</h1>
+    <FilterSearch />
   </main>
 
 </template>
@@ -15,6 +17,7 @@ import HeaderArea from '../components/HeaderArea.vue'
 <style lang="scss" scoped>
 main {
   height: 100vh;
+  padding: 0 100px;
   padding-top: 100px;
   background-color: var(--color-light-1);
 }
