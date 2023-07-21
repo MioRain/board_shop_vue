@@ -1,13 +1,16 @@
 <script setup>
-import { reactive, onMounted } from 'vue'
+import { reactive, provide, onMounted } from 'vue'
 import { useRoute } from 'vue-router';
 import { apiHelper } from '../utils/helpers'
 import HeaderArea from '../components/HeaderArea.vue'
+import ShowProduct from '../components/ShowProduct.vue'
 
 const route = useRoute()
 const data = reactive({
   product: {}
 })
+
+// provide('data', data)
 
 const fetchProduct = async (productId) => {
   const response = await apiHelper.get('/products/' + productId)
@@ -23,8 +26,7 @@ onMounted(() => {
   <HeaderArea />
 
   <main>
-    <h1>{{ data.product.id }} | {{ data.product.name }}</h1>
-    
+    <ShowProduct />
   </main>
 </template>
 
