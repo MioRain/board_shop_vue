@@ -1,0 +1,116 @@
+<script setup>
+import { RouterLink, useRouter } from 'vue-router';
+import { reactive } from 'vue';
+import { apiHelper } from '../utils/helpers'
+
+const router = useRouter()
+
+const formData = reactive({
+  name: 'buyer001',
+  password: 'titaner'
+})
+
+const handleSubmit = async () => {
+  const { data } = await apiHelper.post('/signin', {
+    ...formData
+  })
+  if (data?.data.token) {
+    localStorage.setItem('token', data.data.token)
+    router.push('/')
+  }
+}
+</script>
+
+<template>
+  <div class="wrapper">
+    <div class="logo">
+      <img alt="board shop logo" src="@/assets/logo.png" width="150" height="150" />
+      <h1>Board Shop</h1>
+    </div>
+
+    <form @submit.prevent.stop="handleSubmit">
+      <h2>Sign In</h2>
+
+      <div class="name">
+        <label for="name-input">Name</label>
+        <input v-model="formData.name" id="name-input" type="text">
+      </div>
+
+      <div class="password">
+        <label for="password-input">Password</label>
+        <input v-model="formData.password" id="password-input" type="password">
+      </div>
+
+      <button type="submit">Sign In</button>
+      <RouterLink to="/"> => Sign Up ?</RouterLink>
+    </form>
+
+  </div>
+</template>
+
+<style lang="scss" scoped>
+.wrapper {
+  width: 100%;
+  height: 100vh;
+
+  .logo {
+    img {
+      position: fixed;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    h1 {
+      position: fixed;
+      top: 50px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 3rem;
+      color: var(--color-dark-1);
+      text-shadow: 5px 5px 5px white;
+    }
+  }
+
+  form {
+    width: 300px;
+    margin: auto;
+    position: relative;
+    top: 200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    h2 {
+      font-size: 2rem;
+    }
+
+    .name,
+    .password {
+      width: 100%;
+      margin-top: 20px;
+      padding: 10px;
+      background-color: white;
+      border-radius: 10px;
+
+      label {
+        display: inline-block;
+        width: 90px;
+        color: gray;
+      }
+    }
+
+    button {
+      margin-top: 20px;
+      width: 100%;
+      height: 40px;
+      border-radius: 10px;
+      background-color: var(--color-dark-1);
+      cursor: pointer;
+    }
+
+    a {
+      margin-top: 20px;
+    }
+  }
+}
+</style>

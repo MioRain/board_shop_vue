@@ -10,8 +10,6 @@ const data = reactive({
   product: {}
 })
 
-// provide('data', data)
-
 const fetchProduct = async (productId) => {
   const response = await apiHelper.get('/products/' + productId)
   data.product = response.data

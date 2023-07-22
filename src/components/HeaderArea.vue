@@ -1,4 +1,5 @@
-<script>
+<script setup>
+import { RouterLink } from 'vue-router';
 
 </script>
 
@@ -9,12 +10,12 @@
         <div>Hi, User</div>
       </div>
       <div class="logo">
-        <img alt="board shop logo" class="logo" src="@/assets/logo.png" width="100" height="100" />
+        <img alt="board shop logo" src="@/assets/logo.png" width="100" height="100" />
         <h1>Board Shop</h1>
       </div>
       <nav>
-        <button>購物車</button>
-        <button>登入</button>
+        <router-link to="/shopping_cart">購物車</router-link>
+        <router-link to="/signin">登入</router-link>
       </nav>
     </div>
   </header>
@@ -55,13 +56,14 @@ header {
       }
     }
     nav {
-      button {
+      button, a {
         margin-right: 30px;
         padding: 5px;
         background-color: var(--color-light-1);
         border: 1px solid var(--color-light-1);
         border-radius: 10px;
         font-size: 1.3rem;
+        color: black;
         cursor: pointer;
       }
     }
