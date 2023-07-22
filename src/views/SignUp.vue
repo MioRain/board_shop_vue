@@ -34,7 +34,6 @@ const handleSubmit = async () => {
       })
     }
   } catch (err) {
-    console.error(err)
     Swal.fire({
       title: 'Error!',
       text: err,

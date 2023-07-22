@@ -1,6 +1,24 @@
 <script setup>
 import { RouterView } from 'vue-router'
+import { onMounted, provide, reactive } from 'vue';
 import "@/assets/base.css"
+
+const userData = reactive({
+  token: '',
+  user: {}
+})
+
+const getUserDataFromCookie = () => {
+  const data = JSON.parse(localStorage.getItem('userData'))
+  userData.token = data.token
+  userData.user = data.user
+}
+
+provide('userData', userData)
+
+onMounted(() => {
+  getUserDataFromCookie()
+})
 
 </script>
 
@@ -8,6 +26,4 @@ import "@/assets/base.css"
   <RouterView />
 </template>
 
-<style lang="scss" scoped>
-
-</style>
+<style lang="scss" scoped></style>

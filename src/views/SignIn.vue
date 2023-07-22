@@ -1,10 +1,11 @@
 <script setup>
 import { RouterLink, useRouter } from 'vue-router';
-import { reactive } from 'vue';
+import { reactive, inject } from 'vue';
 import { apiHelper } from '../utils/helpers'
 import Swal from 'sweetalert2'
 
 const router = useRouter()
+const userData = inject('userData')
 
 const formData = reactive({
   name: '',
@@ -16,8 +17,10 @@ const handleSubmit = async () => {
     const { data } = await apiHelper.post('/signin', {
       ...formData
     })
-    if (data?.data.token) {
-      localStorage.setItem('token', data.data.token)
+    if (data) {
+      userData.token = data.data.token
+      userData.user = data.data.user
+      localStorage.setItem('userData', JSON.stringify(data.data))
       router.push('/')
       Swal.fire({
         title: 'Success!',
@@ -29,7 +32,7 @@ const handleSubmit = async () => {
   } catch (err) {
     Swal.fire({
       title: 'Error!',
-      text: '帳號或密碼錯誤',
+      text: err,
       icon: 'error',
       confirmButtonText: '關閉'
     })

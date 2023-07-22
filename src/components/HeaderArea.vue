@@ -1,5 +1,8 @@
 <script setup>
 import { RouterLink } from 'vue-router';
+import { inject } from 'vue'
+
+const userData = inject('userData')
 
 </script>
 
@@ -7,15 +10,17 @@ import { RouterLink } from 'vue-router';
   <header>
     <div class="wrapper">
       <div class="greet">
-        <div>Hi, User</div>
+        <div>Hi, {{ userData.user.name }}</div>
       </div>
       <div class="logo">
         <img alt="board shop logo" src="@/assets/logo.png" width="100" height="100" />
         <h1>Board Shop</h1>
       </div>
       <nav>
-        <router-link to="/shopping_cart">購物車</router-link>
-        <router-link to="/signin">登入</router-link>
+        <router-link v-if="userData.user.role === 'seller'" to="/produc_list">商品管理</router-link>
+        <router-link v-else to="/shopping_cart">購物車</router-link>
+        <router-link v-if="userData.user" to="/logout">登出</router-link>
+        <router-link v-else to="/signin">登入</router-link>
       </nav>
     </div>
   </header>
@@ -55,8 +60,11 @@ header {
         transform: translateY(-50%);
       }
     }
+
     nav {
-      button, a {
+
+      button,
+      a {
         margin-right: 30px;
         padding: 5px;
         background-color: var(--color-light-1);
@@ -68,5 +76,4 @@ header {
       }
     }
   }
-}
-</style>
+}</style>
