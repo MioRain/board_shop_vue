@@ -1,8 +1,15 @@
 <script setup>
-import { RouterLink } from 'vue-router';
+import { RouterLink, useRouter } from 'vue-router';
 import { inject } from 'vue'
 
+const router = useRouter()
+
 const userData = inject('userData')
+
+const logout = () => {
+  router.push('/signin')
+  localStorage.removeItem('userData')
+}
 
 </script>
 
@@ -10,17 +17,17 @@ const userData = inject('userData')
   <header>
     <div class="wrapper">
       <div class="greet">
-        <div>Hi, {{ userData.user.name }}</div>
+        <div>Hi, {{ userData.user.name ? userData.user.name : 'Guest' }}</div>
       </div>
       <div class="logo">
         <img alt="board shop logo" src="@/assets/logo.png" width="100" height="100" />
         <h1>Board Shop</h1>
       </div>
       <nav>
-        <router-link v-if="userData.user.role === 'seller'" to="/produc_list">商品管理</router-link>
-        <router-link v-else to="/shopping_cart">購物車</router-link>
-        <router-link v-if="userData.user" to="/logout">登出</router-link>
-        <router-link v-else to="/signin">登入</router-link>
+        <router-link v-if="userData.user.role !== 'seller'" to="/shopping_cart">購物車</router-link>
+        <router-link v-else to="/produc_list">商品管理</router-link>
+        <router-link v-if="!userData.user.role" to="/signin">登入</router-link>
+        <button @click="logout" v-else>登出</button>
       </nav>
     </div>
   </header>
@@ -76,4 +83,5 @@ header {
       }
     }
   }
-}</style>
+}
+</style>

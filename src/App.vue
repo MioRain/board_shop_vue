@@ -10,8 +10,10 @@ const userData = reactive({
 
 const getUserDataFromCookie = () => {
   const data = JSON.parse(localStorage.getItem('userData'))
-  userData.token = data.token
-  userData.user = data.user
+  if (data) {
+    userData.token = data.token
+    userData.user = data.user
+  }
 }
 
 provide('userData', userData)
