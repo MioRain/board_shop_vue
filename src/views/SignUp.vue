@@ -8,28 +8,36 @@ const router = useRouter()
 
 const formData = reactive({
   name: '',
-  password: ''
+  email: '',
+  password: '',
+  checkPassword: '',
+  isSeller: false
 })
 
 const handleSubmit = async () => {
   try {
-    const { data } = await apiHelper.post('/signin', {
+    const { name, email, password, checkPassword } = { ...formData }
+    if (!name || !email || !password || !checkPassword) throw new Error('請輸入所有欄位')
+    if (password !== checkPassword) throw new Error('輸入的密碼不一致')
+    if (name.length > 16) throw new Error('字數超出上限！')
+
+    const { data } = await apiHelper.post('/signup', {
       ...formData
     })
-    if (data?.data.token) {
-      localStorage.setItem('token', data.data.token)
-      router.push('/')
+    if (data) {
+      router.push('/signin')
       Swal.fire({
         title: 'Success!',
-        text: '登入成功',
+        text: '註冊成功',
         icon: 'success',
         confirmButtonText: '關閉'
       })
     }
   } catch (err) {
+    console.error(err)
     Swal.fire({
       title: 'Error!',
-      text: '帳號或密碼錯誤',
+      text: err,
       icon: 'error',
       confirmButtonText: '關閉'
     })
@@ -45,11 +53,16 @@ const handleSubmit = async () => {
     </div>
 
     <form @submit.prevent.stop="handleSubmit">
-      <h2>Sign In</h2>
+      <h2>Sign Up</h2>
 
       <div class="name">
         <label for="name-input">Name</label>
-        <input v-model="formData.name" id="name-input" type="text">
+        <input v-model="formData.name" id="name-input" type="text" maxlength="16">
+      </div>
+
+      <div class="email">
+        <label for="email">Email</label>
+        <input v-model="formData.email" id="email" type="email">
       </div>
 
       <div class="password">
@@ -57,8 +70,18 @@ const handleSubmit = async () => {
         <input v-model="formData.password" id="password-input" type="password">
       </div>
 
-      <button type="submit">Sign In</button>
-      <RouterLink to="/signup"> => No Account ?</RouterLink>
+      <div class="checkPassword">
+        <label for="checkPassword-input">Check</label>
+        <input v-model="formData.checkPassword" id="checkPassword" type="password">
+      </div>
+
+      <div class="isSeller">
+        <label for="isSeller">是否要註冊為賣家？</label>
+        <input v-model="formData.isSeller" id="isSeller" type="checkbox">
+      </div>
+
+      <button type="submit">Sign Up</button>
+      <RouterLink to="/signin"> Cancel</RouterLink>
     </form>
 
   </div>
@@ -101,7 +124,9 @@ const handleSubmit = async () => {
     }
 
     .name,
-    .password {
+    .email,
+    .password,
+    .checkPassword {
       width: 100%;
       margin-top: 20px;
       padding: 10px;
@@ -112,6 +137,33 @@ const handleSubmit = async () => {
         display: inline-block;
         width: 90px;
         color: gray;
+      }
+    }
+
+    .isSeller {
+      width: 100%;
+      margin-top: 20px;
+      position: relative;
+
+      input {
+        width: 20px;
+        height: 20px;
+        margin-left: 30px;
+        background-color: white;
+        border: 2px solid black;
+        position: absolute;
+        top: 2px;
+        cursor: pointer;
+
+        &:checked {
+          &::after {
+            content: "\2714";
+            position: absolute;
+            top: 0;
+            left: 3px;
+            font-size: 12px;
+          }
+        }
       }
     }
 
