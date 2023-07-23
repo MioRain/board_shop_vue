@@ -13,12 +13,26 @@ const decreaseAmount = (index) => {
   if (product.amount > 0) {
     product.amount--
     userData.shoppingCart.totalPrice -= product.price
+  } else {
+    Swal.fire({
+      title: '取消購買？',
+      text: `商品：${product.name} | 價格：${product.price}`,
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: '取消商品'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        removeProduct(index)
+      }
+    })
   }
 }
 const increaseAmount = (index) => {
   const product = reactive(userData.shoppingCart.products[index])
-    product.amount++
-    userData.shoppingCart.totalPrice += product.price
+  product.amount++
+  userData.shoppingCart.totalPrice += product.price
 }
 
 const checkout = async () => {
@@ -56,7 +70,7 @@ const removeProduct = (index) => {
 onUpdated(() => {
   const price = 0
   userData.shoppingCart.products.forEach(product => {
-    product 
+    product
   })
   userData.shoppingCart.totalPrice
 })
@@ -78,10 +92,15 @@ onBeforeUnmount(() => {
       </thead>
       <tbody>
         <tr v-for="(product, index) in userData.shoppingCart?.products" :key="product.id">
-          <td class="product-image">
-            <img src="@/assets/default-longboard.jpg" alt="product photo">
+          <td colspan="2">
+            <h2 class="product-name">{{ product.name }}</h2>
+            <div class="product-info">
+              <div class="product-image">
+                <img src="@/assets/default-longboard.jpg" alt="product photo" width="200">
+              </div>
+              <div class="product-description">{{ product.description }}</div>
+            </div>
           </td>
-          <td class="product-info">{{ product.description }}</td>
           <td class="product-price">{{ product.price }}</td>
           <td class="product-amount">
             <button @click="decreaseAmount(index)">−</button>
@@ -137,12 +156,14 @@ h1 {
         padding: 10px;
       }
 
-      .product-image {
-        width: 25%;
+      .product-name {
+        margin-bottom: 10px;
+      }
 
-        img {
-          width: 100%;
-          object-fit: contain;
+      .product-info {
+        display: flex;
+        .product-description {
+          padding-left: 10px;
         }
       }
 
@@ -171,9 +192,9 @@ h1 {
 
         .remove-product {
           position: absolute;
-          top: 130px;
+          top: calc(50% + 40px);
           left: 50%;
-          transform: translateX(-50%);
+          transform: translate(-50%, -50%);
         }
       }
 
