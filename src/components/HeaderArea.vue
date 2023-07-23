@@ -19,10 +19,10 @@ const logout = () => {
       <div class="greet">
         <div>Hi, {{ userData.user.name ? userData.user.name : 'Guest' }}</div>
       </div>
-      <div class="logo">
+      <router-link to="/" class="logo">
         <img alt="board shop logo" src="@/assets/logo.png" width="100" height="100" />
         <h1>Board Shop</h1>
-      </div>
+      </router-link>
       <nav>
         <router-link v-if="userData.user.role !== 'seller'" to="/shopping_cart">購物車</router-link>
         <router-link v-else to="/produc_list">商品管理</router-link>
@@ -56,6 +56,7 @@ header {
     }
 
     .logo {
+      color: black;
       img {
         position: relative;
         left: -100px;
