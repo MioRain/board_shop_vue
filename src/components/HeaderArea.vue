@@ -46,6 +46,7 @@ header {
   padding: 0 50px;
   background-color: var(--color-buff);
   position: fixed;
+  z-index: 999;
 
   .wrapper {
     height: 100px;

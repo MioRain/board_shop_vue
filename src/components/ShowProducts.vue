@@ -18,7 +18,7 @@ const addProdcutToCart = (product) => {
     confirmButtonText: '加入購物車'
   }).then((result) => {
     if (result.isConfirmed) {
-      const isAdded = userData.shoppingCart.products.filter(item => {
+      const isAdded = userData.shoppingCart?.products.filter(item => {
         return product.id === item.id
       })
       if (!isAdded.length) {

@@ -44,6 +44,8 @@ const checkout = async () => {
       }
     })
     router.push('/')
+    userData.shoppingCart.products = []
+    userData.shoppingCart.totalPrice = 0
     Swal.fire({
       title: 'Success!',
       text: '訂單成立',
@@ -66,14 +68,6 @@ const removeProduct = (index) => {
   userData.shoppingCart.totalPrice -= product.price * product.amount
   useSetToLocalStorage(userData)
 }
-
-onUpdated(() => {
-  const price = 0
-  userData.shoppingCart.products.forEach(product => {
-    product
-  })
-  userData.shoppingCart.totalPrice
-})
 
 onBeforeUnmount(() => {
   useSetToLocalStorage(userData)
@@ -104,10 +98,10 @@ onBeforeUnmount(() => {
           <td class="product-price">{{ product.price }}</td>
           <td class="product-amount">
             <button @click="decreaseAmount(index)">−</button>
-            <input v-model="product.amount" type="text" pattern="[0-9]*" inputmode="numeric"
-              oninput="this.value = this.value.replace(/[^0-9]/g, '');" maxlength="3">
+            <span>{{ product.amount }}</span>
             <button @click="increaseAmount(index)">＋</button>
             <button @click="removeProduct(index)" class="remove-product">取消</button>
+            <p class="product-inventory">庫存：{{ product.inventory }}</p>
           </td>
         </tr>
         <tr>
@@ -162,6 +156,7 @@ h1 {
 
       .product-info {
         display: flex;
+
         .product-description {
           padding-left: 10px;
         }
@@ -173,13 +168,17 @@ h1 {
         font-size: 1.3rem;
         position: relative;
 
-        button:not(.remove-product),
-        input {
+        button:not(.remove-product) {
+          width: 40px;
           padding: 5px;
           border: 2px solid var(--color-dark-2);
-          background-color: white;
+          border-radius: 20px;
+          background-color: var(--color-light-1);
         }
 
+        span {
+          margin: 0 20px;
+        }
         button {
           cursor: pointer;
         }
@@ -190,11 +189,19 @@ h1 {
           text-align: center;
         }
 
-        .remove-product {
+        .remove-product,
+        .product-inventory {
           position: absolute;
-          top: calc(50% + 40px);
           left: 50%;
           transform: translate(-50%, -50%);
+        }
+
+        .remove-product {
+          top: calc(50% + 40px);
+        }
+
+        .product-inventory {
+          top: calc(50% - 40px);
         }
       }
 

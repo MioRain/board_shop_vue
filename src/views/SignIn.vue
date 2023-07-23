@@ -9,8 +9,8 @@ const router = useRouter()
 const userData = inject('userData')
 
 const formData = reactive({
-  name: 'buyer001',
-  password: 'titaner'
+  name: '',
+  password: ''
 })
 
 const handleSubmit = async () => {
