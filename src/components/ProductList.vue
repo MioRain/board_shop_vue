@@ -1,6 +1,6 @@
 <script setup>
 import { apiHelper } from '../utils/helpers';
-import { inject, onUpdated, reactive, onUnmounted } from 'vue'
+import { inject, onUpdated, reactive, onBeforeUnmount } from 'vue'
 import { useRouter } from 'vue-router';
 import { useSetToLocalStorage } from '../composables/set-to-localstorage';
 import Swal from 'sweetalert2'
@@ -46,6 +46,13 @@ const checkout = async () => {
   }
 }
 
+const removeProduct = (index) => {
+  const product = reactive(userData.shoppingCart.products[index])
+  userData.shoppingCart.products.splice(index, 1)
+  userData.shoppingCart.totalPrice -= product.price * product.amount
+  useSetToLocalStorage(userData)
+}
+
 onUpdated(() => {
   const price = 0
   userData.shoppingCart.products.forEach(product => {
@@ -54,8 +61,7 @@ onUpdated(() => {
   userData.shoppingCart.totalPrice
 })
 
-
-onUnmounted(() => {
+onBeforeUnmount(() => {
   useSetToLocalStorage(userData)
 })
 </script>
@@ -82,6 +88,7 @@ onUnmounted(() => {
             <input v-model="product.amount" type="text" pattern="[0-9]*" inputmode="numeric"
               oninput="this.value = this.value.replace(/[^0-9]/g, '');" maxlength="3">
             <button @click="increaseAmount(index)">＋</button>
+            <button @click="removeProduct(index)" class="remove-product">取消</button>
           </td>
         </tr>
         <tr>
@@ -143,8 +150,9 @@ h1 {
       .product-amount {
         text-align: center;
         font-size: 1.3rem;
+        position: relative;
 
-        button,
+        button:not(.remove-product),
         input {
           padding: 5px;
           border: 2px solid var(--color-dark-2);
@@ -159,6 +167,13 @@ h1 {
           width: 50px;
           margin: 0 -2px;
           text-align: center;
+        }
+
+        .remove-product {
+          position: absolute;
+          top: 130px;
+          left: 50%;
+          transform: translateX(-50%);
         }
       }
 

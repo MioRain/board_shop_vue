@@ -1,15 +1,21 @@
 <script setup>
 import { RouterLink, useRouter } from 'vue-router';
-import { inject } from 'vue'
+import { inject, onUnmounted, ref } from 'vue'
 
 const router = useRouter()
-
 const userData = inject('userData')
+const removeSwitch = ref(false)
 
 const logout = () => {
   router.push('/signin')
-  localStorage.removeItem('userData')
+  removeSwitch.value = true
 }
+
+onUnmounted(() => {
+  if(removeSwitch.value) {
+    localStorage.removeItem('userData')
+  }
+})
 
 </script>
 
@@ -57,6 +63,7 @@ header {
 
     .logo {
       color: black;
+
       img {
         position: relative;
         left: -100px;
