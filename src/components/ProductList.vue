@@ -1,7 +1,8 @@
 <script setup>
 import { apiHelper } from '../utils/helpers';
-import { inject, onUpdated, reactive } from 'vue'
+import { inject, onUpdated, reactive, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router';
+import { useSetToLocalStorage } from '../composables/set-to-localstorage';
 import Swal from 'sweetalert2'
 
 const router = useRouter()
@@ -51,6 +52,11 @@ onUpdated(() => {
     product 
   })
   userData.shoppingCart.totalPrice
+})
+
+
+onUnmounted(() => {
+  useSetToLocalStorage(userData)
 })
 </script>
 

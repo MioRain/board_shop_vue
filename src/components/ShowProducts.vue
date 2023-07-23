@@ -1,6 +1,7 @@
 <script setup>
 import { inject } from 'vue'
-import { RouterLink } from 'vue-router';
+import { RouterLink } from 'vue-router'
+import { useSetToLocalStorage } from '../composables/set-to-localstorage';
 import Swal from 'sweetalert2'
 
 const data = inject('data')
@@ -24,6 +25,7 @@ const addProdcutToCart = (product) => {
         product.amount = 1
         userData.shoppingCart.products.push(product)
         userData.shoppingCart.totalPrice += product.price
+        useSetToLocalStorage(userData)
       }
       Swal.fire(
         '完成',

@@ -2,6 +2,7 @@
 import { RouterLink, useRouter } from 'vue-router';
 import { reactive, inject } from 'vue';
 import { apiHelper } from '../utils/helpers'
+import { useSetToLocalStorage } from '../composables/set-to-localstorage'
 import Swal from 'sweetalert2'
 
 const router = useRouter()
@@ -20,7 +21,7 @@ const handleSubmit = async () => {
     if (data) {
       userData.token = data.data.token
       userData.user = data.data.user
-      localStorage.setItem('userData', JSON.stringify(data.data))
+      useSetToLocalStorage(data.data)
       router.push('/')
       Swal.fire({
         title: 'Success!',

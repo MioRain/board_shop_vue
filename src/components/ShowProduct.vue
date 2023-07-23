@@ -1,5 +1,5 @@
 <script setup>
-import { reactive, onMounted, inject } from 'vue'
+import { reactive, onMounted, inject, onUnmounted } from 'vue'
 import { useRoute } from 'vue-router';
 import { apiHelper } from '../utils/helpers'
 import Swal from 'sweetalert2'
