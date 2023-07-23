@@ -5,7 +5,11 @@ import "@/assets/base.css"
 
 const userData = reactive({
   token: '',
-  user: {}
+  user: {},
+  shoppingCart: {
+    products: [],
+    totalPrice: 0
+  }
 })
 
 const getUserDataFromCookie = () => {
@@ -13,6 +17,7 @@ const getUserDataFromCookie = () => {
   if (data) {
     userData.token = data.token
     userData.user = data.user
+    // userData.shoppingCart = data.shoppingCart
   }
 }
 
