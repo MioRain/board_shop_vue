@@ -1,8 +1,38 @@
 <script setup>
 import { inject } from 'vue'
 import { RouterLink } from 'vue-router';
+import Swal from 'sweetalert2'
 
 const data = inject('data')
+const userData = inject('userData')
+
+const addProdcutToCart = (product) => {
+  Swal.fire({
+    title: '是否加入購物車',
+    text: `商品：${product.name} | 價格：${product.price}`,
+    icon: 'question',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: '加入購物車'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      const isAdded = userData.shoppingCart.products.filter(item => {
+        return product.id === item.id
+      })
+      if (!isAdded.length) {
+        product.amount = 1
+        userData.shoppingCart.products.push(product)
+        userData.shoppingCart.totalPrice += product.price
+      }
+      Swal.fire(
+        '完成',
+        '已加入購物車',
+        'success'
+      )
+    }
+  })
+}
 
 </script>
 
@@ -13,7 +43,7 @@ const data = inject('data')
         <img src="@/assets/default-longboard.jpg" alt="product photo" width="200" height="200">
       </router-link>
       <h3 class="name">{{ product.name }}</h3>
-      <button class="to-cart-btn">加入購物車</button>
+      <button @click="addProdcutToCart(product)" class="to-cart-btn">加入購物車</button>
     </div>
   </div>
 </template>

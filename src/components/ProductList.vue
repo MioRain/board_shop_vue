@@ -1,6 +1,6 @@
 <script setup>
 import { apiHelper } from '../utils/helpers';
-import { inject } from 'vue'
+import { inject, onUpdated, reactive } from 'vue'
 import { useRouter } from 'vue-router';
 import Swal from 'sweetalert2'
 
@@ -8,10 +8,16 @@ const router = useRouter()
 const userData = inject('userData')
 
 const decreaseAmount = (index) => {
-  userData.shoppingCart[index].amount--
+  const product = reactive(userData.shoppingCart.products[index])
+  if (product.amount > 0) {
+    product.amount--
+    userData.shoppingCart.totalPrice -= product.price
+  }
 }
 const increaseAmount = (index) => {
-  userData.shoppingCart[index].amount++
+  const product = reactive(userData.shoppingCart.products[index])
+    product.amount++
+    userData.shoppingCart.totalPrice += product.price
 }
 
 const checkout = async () => {
@@ -38,6 +44,14 @@ const checkout = async () => {
     })
   }
 }
+
+onUpdated(() => {
+  const price = 0
+  userData.shoppingCart.products.forEach(product => {
+    product 
+  })
+  userData.shoppingCart.totalPrice
+})
 </script>
 
 <template>

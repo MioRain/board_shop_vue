@@ -1,13 +1,43 @@
 <script setup>
-import { reactive, onMounted } from 'vue'
+import { reactive, onMounted, inject } from 'vue'
 import { useRoute } from 'vue-router';
 import { apiHelper } from '../utils/helpers'
+import Swal from 'sweetalert2'
 
+const userData = inject('userData')
 const route = useRoute()
 const data = reactive({
   product: {},
   category: {}
 })
+
+const addProdcutToCart = (product) => {
+  Swal.fire({
+    title: '是否加入購物車',
+    text: `商品：${product.name} | 價格：${product.price}`,
+    icon: 'question',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: '加入購物車'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      const isAdded = userData.shoppingCart.products.filter(item => {
+        return product.id === item.id
+      })
+      if (!isAdded.length) {
+        product.amount = 1
+        userData.shoppingCart.products.push(product)
+        userData.shoppingCart.totalPrice += product.price
+      }
+      Swal.fire(
+        '完成',
+        '已加入購物車',
+        'success'
+      )
+    }
+  })
+}
 
 const fetchProduct = async (productId) => {
   const response = await apiHelper.get('/products/' + productId)
@@ -34,7 +64,7 @@ onMounted(() => {
       <p>庫存：{{ data.product.inventory }}</p>
       <div class="action">
         <button @click=$router.go(-1)>取消</button>
-        <button>加入購物車</button>
+        <button @click="addProdcutToCart(data.product)">加入購物車</button>
       </div>
     </div>
   </div>
