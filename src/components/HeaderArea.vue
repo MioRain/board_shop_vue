@@ -31,7 +31,7 @@ onUnmounted(() => {
       </router-link>
       <nav>
         <router-link v-if="userData.user.role !== 'seller'" to="/shopping_cart">購物車</router-link>
-        <router-link v-else to="/produc_list">商品管理</router-link>
+        <router-link v-else to="/seller/products">商品管理</router-link>
         <router-link v-if="!userData.user.role" to="/signin">登入</router-link>
         <button @click="logout" v-else>登出</button>
       </nav>

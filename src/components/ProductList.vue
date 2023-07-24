@@ -1,12 +1,13 @@
 <script setup>
 import { apiHelper } from '../utils/helpers';
-import { inject, onUpdated, reactive, onBeforeUnmount } from 'vue'
-import { useRouter } from 'vue-router';
+import { inject, reactive, onBeforeUnmount } from 'vue'
+import { useRouter, RouterLink } from 'vue-router';
 import { useSetToLocalStorage } from '../composables/set-to-localstorage';
 import Swal from 'sweetalert2'
 
 const router = useRouter()
 const userData = inject('userData')
+const sellerData = inject('sellerData')
 
 const decreaseAmount = (index) => {
   const product = reactive(userData.shoppingCart.products[index])
@@ -76,16 +77,16 @@ onBeforeUnmount(() => {
 
 <template>
   <div class="product-list">
-    <table v-if="userData.shoppingCart?.products.length">
+    <table v-if="userData.shoppingCart?.products.length || sellerData.products.length">
       <thead>
         <tr>
           <th colspan="2">商品明細</th>
           <th>價格</th>
-          <th>數量</th>
+          <th>{{ sellerData ? '庫存量' : '數量' }}</th>
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(product, index) in userData.shoppingCart?.products" :key="product.id">
+        <tr v-for="(product, index) in (userData.shoppingCart?.products || sellerData.products)" :key="product.id">
           <td colspan="2">
             <h2 class="product-name">{{ product.name }}</h2>
             <div class="product-info">
@@ -96,15 +97,20 @@ onBeforeUnmount(() => {
             </div>
           </td>
           <td class="product-price">{{ product.price }}</td>
-          <td class="product-amount">
+          <td v-if="userData.user.role === 'user'" class="product-amount">
             <button @click="decreaseAmount(index)">−</button>
             <span>{{ product.amount }}</span>
             <button @click="increaseAmount(index)">＋</button>
             <button @click="removeProduct(index)" class="remove-product">取消</button>
             <p class="product-inventory">庫存：{{ product.inventory }}</p>
           </td>
+          <td v-else-if="userData.user.role === 'seller'" class="product-amount">
+            <span>{{ product.inventory }}</span>
+            <RouterLink to="/seller/products/edit" class="edit-product">編輯</RouterLink>
+            <p class="product-inventory">{{ product.isPublic ? '上架中' : '下架中' }}</p>
+          </td>
         </tr>
-        <tr>
+        <tr v-if="userData.user.role === 'buyer'">
           <td class="space" colspan="2"></td>
           <td class="total-price">小計：{{ userData.shoppingCart?.totalPrice }} 元</td>
           <td class="checkout">
@@ -113,7 +119,7 @@ onBeforeUnmount(() => {
         </tr>
       </tbody>
     </table>
-    <h1 v-else>尚未購買商品</h1>
+    <h1 v-else>{{ sellerData ? '尚未新增商品' : '尚未購買商品' }}</h1>
   </div>
 </template>
 
@@ -179,6 +185,7 @@ h1 {
         span {
           margin: 0 20px;
         }
+
         button {
           cursor: pointer;
         }
@@ -190,6 +197,7 @@ h1 {
         }
 
         .remove-product,
+        .edit-product,
         .product-inventory {
           position: absolute;
           left: 50%;
@@ -198,6 +206,16 @@ h1 {
 
         .remove-product {
           top: calc(50% + 40px);
+        }
+
+        a.edit-product {
+          width: 100px;
+          padding: 5px;
+          border: 2px solid var(--color-dark-2);
+          border-radius: 20px;
+          background-color: var(--color-light-1);
+          top: calc(50% + 40px);
+          color: black;
         }
 
         .product-inventory {
