@@ -1,7 +1,7 @@
 <script setup>
 import { apiHelper } from '../utils/helpers';
 import { inject, reactive, onBeforeUnmount } from 'vue'
-import { useRouter, RouterLink } from 'vue-router';
+import { useRouter } from 'vue-router';
 import { useSetToLocalStorage } from '../composables/set-to-localstorage';
 import Swal from 'sweetalert2'
 
@@ -9,6 +9,7 @@ const router = useRouter()
 const userData = inject('userData')
 const sellerData = inject('sellerData')
 const showProductCard = inject('showProductCard')
+const reload = inject('reload')
 
 const decreaseAmount = (index) => {
   const product = reactive(userData.shoppingCart.products[index])
@@ -71,6 +72,31 @@ const removeProduct = (index) => {
   useSetToLocalStorage(userData)
 }
 
+const destroyProduct = async (productId) => {
+  const reslut = await Swal.fire({
+    title: '是否刪除商品',
+    icon: 'question',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Yes'
+  })
+  if (reslut.isConfirmed) {
+    const response = await apiHelper.delete('/seller/products/' + productId, {
+      headers: {
+        Authorization: `Bearer ${userData.token}`
+      }
+    })
+    reload()
+    Swal.fire({
+      title: 'Success!',
+      text: '已刪除商品',
+      icon: 'success',
+      confirmButtonText: '關閉'
+    })
+  }
+}
+
 onBeforeUnmount(() => {
   useSetToLocalStorage(userData)
 })
@@ -107,9 +133,11 @@ onBeforeUnmount(() => {
             <p class="product-inventory">庫存：{{ product.inventory }}</p>
           </td>
           <td v-else-if="userData.user.role === 'seller'" class="product-amount">
+            <button @click="destroyProduct(product.id)" class="destroy-product">Ｘ</button>
             <span>{{ product.inventory }}</span>
             <button class="edit-product" @click="showProductCard(product.id)">編輯</button>
-            <p class="product-inventory" :class="{ dark: !product.isPublic, light: product.isPublic }">{{ product.isPublic ? '上架中' : '下架中' }}</p>
+            <p class="product-inventory" :class="{ dark: !product.isPublic, light: product.isPublic }">{{ product.isPublic
+              ? '上架中' : '下架中' }}</p>
           </td>
         </tr>
         <tr v-if="userData.user.role === 'buyer'">
@@ -235,12 +263,23 @@ h1 {
           top: calc(50% - 40px);
           font-size: 1.5rem;
         }
+
         .dark {
           color: var(--color-dark-2);
-          
+
         }
+
         .light {
           color: var(--color-buff);
+        }
+
+        button.destroy-product {
+          position: absolute;
+          top: 0;
+          right: 0;
+          border: none;
+          background-color: var(--color-dark-1);
+          font-size: 1.5rem;
         }
       }
 
