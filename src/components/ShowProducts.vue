@@ -45,7 +45,7 @@ const addProdcutToCart = (product) => {
         <img src="@/assets/default-longboard.jpg" alt="product photo" width="200" height="200">
       </router-link>
       <h3 class="name">{{ product.name }}</h3>
-      <button @click="addProdcutToCart(product)" class="to-cart-btn">加入購物車</button>
+      <button v-if="userData.user.role === 'buyer'" @click="addProdcutToCart(product)" class="to-cart-btn">加入購物車</button>
     </div>
   </div>
 </template>

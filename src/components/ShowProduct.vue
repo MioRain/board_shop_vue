@@ -64,7 +64,7 @@ onMounted(() => {
       <p>庫存：{{ data.product.inventory }}</p>
       <div class="action">
         <button @click=$router.go(-1)>取消</button>
-        <button @click="addProdcutToCart(data.product)">加入購物車</button>
+        <button v-if="userData.user.role === 'buyer'" @click="addProdcutToCart(data.product)">加入購物車</button>
       </div>
     </div>
   </div>

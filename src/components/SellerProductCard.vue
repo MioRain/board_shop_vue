@@ -59,9 +59,8 @@ const handleSubmit = async (e) => {
       formData.append('isPublic', true)
     }
     if (sellerData.product?.id) {
-      formData.append('productId', sellerData.product.id)
-      sellerData.product.id = null
-      newProduct = await apiHelper.put('/seller/products',
+      const productId = sellerData.product.id
+      newProduct = await apiHelper.put('/seller/products/' + productId,
         formData, {
         headers: {
           Authorization: `Bearer ${userData.token}`,
