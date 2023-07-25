@@ -109,7 +109,7 @@ onBeforeUnmount(() => {
           <td v-else-if="userData.user.role === 'seller'" class="product-amount">
             <span>{{ product.inventory }}</span>
             <button class="edit-product" @click="showProductCard(product.id)">編輯</button>
-            <p class="product-inventory">{{ product.isPublic ? '上架中' : '下架中' }}</p>
+            <p class="product-inventory" :class="{ dark: !product.isPublic, light: product.isPublic }">{{ product.isPublic ? '上架中' : '下架中' }}</p>
           </td>
         </tr>
         <tr v-if="userData.user.role === 'buyer'">
@@ -233,6 +233,14 @@ h1 {
 
         .product-inventory {
           top: calc(50% - 40px);
+          font-size: 1.5rem;
+        }
+        .dark {
+          color: var(--color-dark-2);
+          
+        }
+        .light {
+          color: var(--color-buff);
         }
       }
 

@@ -4,6 +4,7 @@ import { apiHelper } from '../utils/helpers'
 import Swal from 'sweetalert2'
 
 const sellerData = inject('sellerData')
+const userData = inject('userData')
 const showCard = inject('showCard')
 const reload = inject('reload')
 const categories = reactive({
@@ -48,7 +49,54 @@ const togglePublic = () => {
   })
 }
 
-const uploadHandle = (e) => {
+const handleSubmit = async (e) => {
+  try {
+    let newProduct = {}
+    const form = e.target
+    const formData = new FormData(form)
+    formData.append('userId', userData.user.id)
+    if (sellerData.product.isPublic) {
+      formData.append('isPublic', true)
+    }
+    if (sellerData.product?.id) {
+      formData.append('productId', sellerData.product.id)
+      sellerData.product.id = null
+      newProduct = await apiHelper.put('/seller/products',
+        formData, {
+        headers: {
+          Authorization: `Bearer ${userData.token}`,
+          'Content-Type': 'multipart/form-data'
+        }
+      })
+    } else {
+      newProduct = await apiHelper.post('/seller/products',
+        formData, {
+        headers: {
+          Authorization: `Bearer ${userData.token}`,
+          'Content-Type': 'multipart/form-data'
+        }
+      })
+    }
+    if (newProduct) {
+      handleCancel()
+      Swal.fire({
+        title: 'Success!',
+        text: '商品新增成功',
+        icon: 'success',
+        confirmButtonText: '關閉'
+      })
+    }
+  } catch (err) {
+    Swal.fire({
+      title: 'Error!',
+      text: err,
+      icon: 'error',
+      confirmButtonText: '關閉'
+    })
+  }
+}
+
+const handleUpload = (e) => {
   const { files } = e.target
   if (files.length === 0) {
     sellerData.product.imageFile = ''
@@ -66,53 +114,54 @@ onMounted(() => {
 </script>
 
 <template>
-  <form class="product">
+  <form @submit.prevent.stop="handleSubmit" class="product" enctype="multipart/form-data">
     <div class="product-img">
-      <img v-show="sellerData.product.imagePath" :src="sellerData.product.imagePath" alt="product photo">
-      <img v-show="sellerData.product.imageFile" :src="imageTemp" alt="product photo">
-      <img v-show="!sellerData.product.imageFile" src="@/assets/default.png" alt="product photo">
-      <input @change="uploadHandle" type="file">
+      <img v-if="sellerData.product.imagePath" :src="sellerData.product.imagePath" alt="product photo">
+      <img v-else-if="sellerData.product.imageFile" :src="imageTemp" alt="product photo">
+      <img v-else="!sellerData.product.imageFile" src="@/assets/default.png" alt="product photo">
+      <input @change="handleUpload" type="file" name="image">
     </div>
     <div class="product-info">
       <div>
         <label>商品名稱</label>
-        <input v-model="sellerData.product.name" class="name" type="text" maxlength="50">
+        <input v-model="sellerData.product.name" class="name" type="text" name="name" maxlength="50" required>
       </div>
       <div>
         <label>產品介紹</label>
-        <textarea v-model="sellerData.product.description" class="description" maxlength="100" wrap="hard"></textarea>
+        <textarea v-model="sellerData.product.description" class="description" name="description" maxlength="100"
+          wrap="hard" required></textarea>
       </div>
       <div>
         <label>種類</label>
-        <select v-model="sellerData.product.category.id" class="category">
+        <select v-model="sellerData.product.categoryId" class="category" name="categoryId" required>
           <option v-for="category in categories.arr" :key="category.id" :value="category.id">{{ category.name }}</option>
         </select>
       </div>
       <div>
         <label>尺寸</label>
-        <input v-model="sellerData.product.size" type="text" oninput="this.value = this.value.replace(/[^0-9]/g, '');"
-          maxlength="2" max="99">
+        <input v-model="sellerData.product.size" type="text" name="size"
+          oninput="this.value = this.value.replace(/[^0-9]/g, '');" maxlength="2" max="99" required>
       </div>
       <div>
         <label>價格</label>
-        <input v-model="sellerData.product.price" type="text" oninput="this.value = this.value.replace(/[^0-9]/g, '');"
-          maxlength="6">
+        <input v-model="sellerData.product.price" type="text" name="price"
+          oninput="this.value = this.value.replace(/[^0-9]/g, '');" maxlength="6" required>
       </div>
       <div>
         <label>庫存</label>
-        <input v-model="sellerData.product.inventory" type="text"
-          oninput="this.value = this.value.replace(/[^0-9]/g, '');" maxlength="3" max="999">
+        <input v-model="sellerData.product.inventory" type="text" name="inventory"
+          oninput="this.value = this.value.replace(/[^0-9]/g, '');" maxlength="3" max="999" required>
       </div>
       <div v-if="!sellerData.product.userId" class="isPublic">
         <label for="isPublic">商品是否直接上架？</label>
-        <input v-model="sellerData.product.isPublic" id="isPublic" type="checkbox">
+        <input v-model="sellerData.product.isPublic" id="isPublic" type="checkbox" name="isPublic">
       </div>
       <div v-else class="state">
         <label>商品狀態</label>
-        <button @click="togglePublic">{{ sellerData.product.isPublic ? '上架中' : '下架中' }}</button>
+        <button @click.prevent.stop="togglePublic">{{ sellerData.product.isPublic ? '上架中' : '下架中' }}</button>
       </div>
       <div class="action">
-        <button @click="handleCancel">取消</button>
+        <button @click.prevent.stop="handleCancel">取消</button>
         <button @click="">確定</button>
       </div>
     </div>
@@ -158,9 +207,9 @@ onMounted(() => {
       margin-top: 20px;
       padding: 5px;
       font-size: 1.3rem;
-    border-radius: 5px;
-    background-color: var(--color-light-1);
-    cursor: pointer;
+      border-radius: 5px;
+      background-color: var(--color-light-1);
+      cursor: pointer;
     }
   }
 
