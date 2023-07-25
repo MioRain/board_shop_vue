@@ -119,7 +119,8 @@ onBeforeUnmount(() => {
             <h2 class="product-name">{{ product.name }}</h2>
             <div class="product-info">
               <div class="product-image">
-                <img src="@/assets/default-longboard.jpg" alt="product photo" width="200">
+                <img v-if="product.imagePath" :src="product.imagePath" alt="product photo" width="200">
+                <img v-else src="@/assets/default.png" alt="product photo" width="200">
               </div>
               <div class="product-description">{{ product.description }}</div>
             </div>

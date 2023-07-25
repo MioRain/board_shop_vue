@@ -42,7 +42,8 @@ const addProdcutToCart = (product) => {
   <div class="products">
     <div v-for="product in data.products" class="product">
       <router-link :to="`/products/${product.id}`">
-        <img src="@/assets/default-longboard.jpg" alt="product photo" width="200" height="200">
+        <img v-if="product.imagePath" :src="product.imagePath" alt="product photo" width="200">
+        <img v-else src="@/assets/default.png" alt="product photo" width="200">
       </router-link>
       <h3 class="name">{{ product.name }}</h3>
       <button v-if="userData.user.role === 'buyer'" @click="addProdcutToCart(product)" class="to-cart-btn">加入購物車</button>

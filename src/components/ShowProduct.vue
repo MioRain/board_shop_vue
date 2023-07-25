@@ -53,7 +53,8 @@ onMounted(() => {
 <template>
   <div class="product">
     <div class="product-img">
-      <img src="@/assets/default-longboard.jpg" alt="product photo">
+      <img v-if="data.product?.imagePath" :src="data.product.imagePath" alt="product photo" width="200">
+      <img v-else src="@/assets/default.png" alt="product photo" width="200">
     </div>
     <div class="product-info">
       <h1>{{ data.product.name }}</h1>
@@ -89,6 +90,7 @@ onMounted(() => {
       object-fit: contain;
     }
   }
+
   .product-info {
     width: 55%;
     display: flex;
