@@ -105,7 +105,7 @@ onBeforeUnmount(() => {
 <template>
   <div class="product-list">
     <button v-if="userData.user.role === 'seller'" class="new-product" @click="showProductCard(null)">新增商品</button>
-    <table v-if="userData.shoppingCart?.products.length || sellerData.products.length">
+    <table v-if="userData.shoppingCart?.products.length || sellerData?.products.length">
       <thead>
         <tr>
           <th colspan="2">商品明細</th>
@@ -126,7 +126,7 @@ onBeforeUnmount(() => {
             </div>
           </td>
           <td class="product-price">{{ product.price }}</td>
-          <td v-if="userData.user.role === 'user'" class="product-amount">
+          <td v-if="userData.user.role === 'buyer'" class="product-amount">
             <button @click="decreaseAmount(index)">−</button>
             <span>{{ product.amount }}</span>
             <button @click="increaseAmount(index)">＋</button>

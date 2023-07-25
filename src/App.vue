@@ -25,6 +25,8 @@ const getUserDataFromCookie = () => {
   if (data) {
     userData.token = data.token
     userData.user = data.user
+  }
+  if (data.shoppingCart) {
     userData.shoppingCart = data.shoppingCart
   }
 }

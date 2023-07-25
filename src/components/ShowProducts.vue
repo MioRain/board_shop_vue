@@ -18,12 +18,12 @@ const addProdcutToCart = (product) => {
     confirmButtonText: '加入購物車'
   }).then((result) => {
     if (result.isConfirmed) {
-      const isAdded = userData.shoppingCart?.products.filter(item => {
+      const isAdded = userData.shoppingCart?.products.find(item => {
         return product.id === item.id
       })
-      if (!isAdded.length) {
+      if (!isAdded) {
         product.amount = 1
-        userData.shoppingCart.products.push(product)
+        userData.shoppingCart?.products.push(product)
         userData.shoppingCart.totalPrice += product.price
         useSetToLocalStorage(userData)
       }
