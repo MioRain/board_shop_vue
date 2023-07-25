@@ -1,6 +1,6 @@
 <script setup>
 import { RouterView } from 'vue-router'
-import { onMounted, provide, reactive } from 'vue';
+import { nextTick, onMounted, provide, ref, reactive } from 'vue';
 import "@/assets/base.css"
 
 const userData = reactive({
@@ -11,6 +11,14 @@ const userData = reactive({
     totalPrice: 0
   }
 })
+const isRouterAlive = ref(true)
+
+const reload = () => {
+  isRouterAlive.value = false
+  nextTick(() => {
+    isRouterAlive.value = true
+  }) 
+}
 
 const getUserDataFromCookie = () => {
   const data = JSON.parse(localStorage.getItem('userData'))
@@ -22,6 +30,7 @@ const getUserDataFromCookie = () => {
 }
 
 provide('userData', userData)
+provide('reload', reload)
 
 onMounted(() => {
   getUserDataFromCookie()
@@ -30,7 +39,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <RouterView />
+  <RouterView v-if="isRouterAlive" />
 </template>
 
 <style lang="scss" scoped></style>

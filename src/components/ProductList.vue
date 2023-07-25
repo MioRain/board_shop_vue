@@ -8,6 +8,7 @@ import Swal from 'sweetalert2'
 const router = useRouter()
 const userData = inject('userData')
 const sellerData = inject('sellerData')
+const showProductCard = inject('showProductCard')
 
 const decreaseAmount = (index) => {
   const product = reactive(userData.shoppingCart.products[index])
@@ -77,6 +78,7 @@ onBeforeUnmount(() => {
 
 <template>
   <div class="product-list">
+    <button v-if="userData.user.role === 'seller'" class="new-product" @click="showProductCard(null)">新增商品</button>
     <table v-if="userData.shoppingCart?.products.length || sellerData.products.length">
       <thead>
         <tr>
@@ -106,7 +108,7 @@ onBeforeUnmount(() => {
           </td>
           <td v-else-if="userData.user.role === 'seller'" class="product-amount">
             <span>{{ product.inventory }}</span>
-            <RouterLink to="/seller/products/edit" class="edit-product">編輯</RouterLink>
+            <button class="edit-product" @click="showProductCard(product.id)">編輯</button>
             <p class="product-inventory">{{ product.isPublic ? '上架中' : '下架中' }}</p>
           </td>
         </tr>
@@ -126,6 +128,17 @@ onBeforeUnmount(() => {
 <style lang="scss" scoped>
 h1 {
   text-align: center;
+}
+
+.new-product {
+  width: 120px;
+  margin-bottom: 20px;
+  padding: 5px;
+  border: 2px solid var(--color-dark-2);
+  border-radius: 20px;
+  background-color: var(--color-light-1);
+  font-size: 1.4rem;
+  cursor: pointer;
 }
 
 .product-list {
@@ -208,7 +221,7 @@ h1 {
           top: calc(50% + 40px);
         }
 
-        a.edit-product {
+        button.edit-product {
           width: 100px;
           padding: 5px;
           border: 2px solid var(--color-dark-2);
