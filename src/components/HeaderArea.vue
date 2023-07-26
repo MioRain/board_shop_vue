@@ -107,6 +107,7 @@ header {
           background-color: rgba($color: #ef7f7f, $alpha: 1.0);
           text-align: center;
           font-size: 1.2rem;
+          line-height: 1.5rem;
         }
       }
     }

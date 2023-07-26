@@ -261,7 +261,7 @@ h1 {
         }
 
         .product-inventory {
-          top: calc(50% - 40px);
+          top: calc(50% - 50px);
           font-size: 1.5rem;
         }
 
