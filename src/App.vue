@@ -35,7 +35,6 @@ provide('userData', userData)
 provide('reload', reload)
 
 onMounted(() => {
-  console.log(window.location.hostname)
   getUserDataFromCookie()
 })
 

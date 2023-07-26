@@ -11,6 +11,7 @@ const categories = reactive({
   arr: []
 })
 const imageTemp = ref(null)
+const isLoading = inject('isLoading')
 
 const fetchCategories = async () => {
   const { data } = await apiHelper.get('/categories')
@@ -51,6 +52,7 @@ const togglePublic = () => {
 
 const handleSubmit = async (e) => {
   try {
+    isLoading.value = true
     let newProduct = {}
     const form = e.target
     const formData = new FormData(form)
@@ -80,7 +82,7 @@ const handleSubmit = async (e) => {
       handleCancel()
       Swal.fire({
         title: 'Success!',
-        text: '商品新增成功',
+        text: '商品新增/修改成功',
         icon: 'success',
         confirmButtonText: '關閉'
       })

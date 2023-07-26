@@ -2,6 +2,7 @@
 import ProductList from '../components/ProductList.vue'
 import HeaderArea from '../components/HeaderArea.vue'
 import SellerProductCard from '../components/SellerProductCard.vue'
+import LoadingAnimation from '../components/LoadingAnimation.vue'
 import { onMounted, ref, reactive, provide, inject } from 'vue'
 import { apiHelper } from '../utils/helpers';
 
@@ -22,6 +23,7 @@ const sellerData = reactive({
   }
 })
 const showCard = ref(false)
+const isLoading = ref(false)
 
 const fetchSellerProducts = async () => {
   const { data } = await apiHelper.get('/seller/products', {
@@ -51,6 +53,7 @@ const showProductCard = async (productId) => {
 
 provide('sellerData', sellerData)
 provide('showCard', showCard)
+provide('isLoading', isLoading)
 provide('showProductCard', showProductCard)
 
 onMounted(() => {
@@ -59,6 +62,7 @@ onMounted(() => {
 </script>
 
 <template>
+  <LoadingAnimation v-if="isLoading" />
   <HeaderArea />
   <SellerProductCard v-show="showCard" />
   <main>
