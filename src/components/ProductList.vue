@@ -114,7 +114,7 @@ onBeforeUnmount(() => {
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(product, index) in (userData.shoppingCart?.products || sellerData.products)" :key="product.id">
+        <tr v-for="(product, index) in (userData.shoppingCart?.products.length ? userData.shoppingCart?.products : sellerData.products)" :key="product.id">
           <td colspan="2">
             <h2 class="product-name">{{ product.name }}</h2>
             <div class="product-info">
