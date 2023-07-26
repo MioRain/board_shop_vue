@@ -12,7 +12,7 @@ const logout = () => {
 }
 
 onUnmounted(() => {
-  if(removeSwitch.value) {
+  if (removeSwitch.value) {
     localStorage.removeItem('userData')
   }
 })
@@ -30,7 +30,10 @@ onUnmounted(() => {
         <h1>Board Shop</h1>
       </router-link>
       <nav>
-        <router-link v-if="userData.user.role !== 'seller'" to="/shopping_cart">購物車</router-link>
+        <router-link v-if="userData.user.role !== 'seller'" to="/shopping_cart" class="cart-btn">
+          購物車
+          <p v-show="userData.shoppingCart?.products.length" class="notification">{{ userData.shoppingCart.products.length }}</p>
+        </router-link>
         <router-link v-else to="/seller/products">商品管理</router-link>
         <router-link v-if="!userData.user.role" to="/signin">登入</router-link>
         <button @click="logout" v-else>登出</button>
@@ -89,6 +92,22 @@ header {
         font-size: 1.3rem;
         color: black;
         cursor: pointer;
+      }
+
+      & .cart-btn {
+        position: relative;
+
+        p {
+          width: 25px;
+          height: 25px;
+          position: absolute;
+          top: -10px;
+          right: -15px;
+          border-radius: 50%;
+          background-color: rgba($color: #ef7f7f, $alpha: 1.0);
+          text-align: center;
+          font-size: 1.2rem;
+        }
       }
     }
   }
